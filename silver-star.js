@@ -11,8 +11,11 @@
   const onlineButton = document.querySelector("#onlineUpdateButton");
   const onlineStatus = document.querySelector("#onlineStatus");
   const onlineStatusDot = document.querySelector("#onlineStatusDot");
+  const loadMoreButton = document.querySelector("#loadMoreButton");
   const onlineRoot = "https://teopoh71.github.io/silver-star-updates/";
+  const pageSize = 24;
   let category = catalog.categories[0]?.slug || "";
+  let visibleCount = pageSize;
   const money = value => `RM ${Number(value).toLocaleString("en-MY", { maximumFractionDigits: 0 })}`;
   const escape = value => String(value ?? "").replace(/[&<>\"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 
@@ -61,7 +64,7 @@
     button.className = `chip${item.slug === category ? " active" : ""}`;
     button.textContent = item.name;
     button.dataset.category = item.slug;
-    button.addEventListener("click", () => { category = item.slug; document.querySelectorAll(".chip").forEach(el => el.classList.toggle("active", el === button)); render(); });
+    button.addEventListener("click", () => { category = item.slug; visibleCount = pageSize; document.querySelectorAll(".chip").forEach(el => el.classList.toggle("active", el === button)); render(); });
     chips.append(button);
   });
 
@@ -69,10 +72,13 @@
   function render() {
     const query = search.value.trim().toLowerCase();
     const products = catalog.products.filter(p => p.categorySlug === category && (!query || searchable(p).includes(query)));
+    const visibleProducts = products.slice(0, visibleCount);
     count.textContent = products.length.toLocaleString();
     categoryLabel.textContent = catalog.categories.find(item => item.slug === category)?.name || "";
     empty.hidden = products.length > 0;
-    grid.innerHTML = products.map(p => `<button class="card" data-id="${p.id}"><img src="${p.image}" alt="${escape(p.title)}" loading="lazy"><div class="card-body"><span class="category">${escape(p.category)}</span><span class="page">P.${p.page}</span><h2>${escape(p.title)}</h2>${p.sellingPrice ? `<div class="price">${money(p.sellingPrice)}${p.variants.length > 1 ? " 起" : ""}</div>` : '<div class="pending">报价待确认</div>'}</div></button>`).join("");
+    grid.innerHTML = visibleProducts.map((p, index) => `<button class="card" data-id="${p.id}"><img src="${p.image}" alt="${escape(p.title)}" loading="lazy" decoding="async"${index < 4 ? ' fetchpriority="high"' : ""}><div class="card-body"><span class="category">${escape(p.category)}</span><span class="page">P.${p.page}</span><h2>${escape(p.title)}</h2>${p.sellingPrice ? `<div class="price">${money(p.sellingPrice)}${p.variants.length > 1 ? " 起" : ""}</div>` : '<div class="pending">报价待确认</div>'}</div></button>`).join("");
+    loadMoreButton.hidden = visibleProducts.length >= products.length;
+    loadMoreButton.textContent = `显示更多产品（${visibleProducts.length}/${products.length}）`;
   }
 
   grid.addEventListener("click", event => {
@@ -84,6 +90,7 @@
   });
   dialog.querySelector(".close").addEventListener("click", () => dialog.close());
   dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
-  search.addEventListener("input", render);
+  search.addEventListener("input", () => { visibleCount = pageSize; render(); });
+  loadMoreButton.addEventListener("click", () => { visibleCount += pageSize; render(); });
   render();
 })();

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#17231f">
   <title>银星家具 · HP</title>
-  <link rel="stylesheet" href="silver-star.css?v=v1217-online-update">
+  <link rel="stylesheet" href="silver-star.css?v=v1218-fast-first-paint">
 </head>
 <body>
   <header class="hero">
@@ -14,7 +14,7 @@
     <div class="hero-actions">
       <div class="online-state"><span id="onlineStatusDot" class="status-dot"></span><span id="onlineStatus">检查网络…</span></div>
       <button id="onlineUpdateButton" class="online-update" type="button">线上更新</button>
-      <span class="version">v1217</span>
+      <span class="version">v1218</span>
     </div>
   </header>
   <main>
@@ -24,10 +24,11 @@
       <div class="summary"><strong id="resultCount">0</strong> 款 <span id="currentCategoryLabel"></span></div>
     </section>
     <section id="productGrid" class="grid" aria-live="polite"></section>
+    <button id="loadMoreButton" class="load-more" type="button" hidden>显示更多产品</button>
     <div id="emptyState" class="empty" hidden>没有找到相符产品</div>
   </main>
   <dialog id="detailDialog"><button class="close" aria-label="关闭">×</button><div id="detailContent"></div></dialog>
-  <script src="silver-star-data.js?v=v1217-online-update"></script>
-  <script src="silver-star.js?v=v1217-online-update"></script>
+  <script src="silver-star-data.js?v=v1218-fast-first-paint"></script>
+  <script src="silver-star.js?v=v1218-fast-first-paint"></script>
 </body>
 </html>
