@@ -14,6 +14,8 @@
   const loadMoreButton = document.querySelector("#loadMoreButton");
   const onlineRoot = "https://teopoh71.github.io/silver-star-updates/";
   const onlineManifestUrl = "https://raw.githubusercontent.com/teopoh71/silver-star-updates/main/online-manifest.json";
+  const currentContentVersion = "v1218-fast-first-paint";
+  const currentSiteUrl = `${onlineRoot}silver-star-v1218.html`;
   const pageSize = 24;
   let category = catalog.categories[0]?.slug || "";
   let visibleCount = pageSize;
@@ -42,7 +44,7 @@
       const response = await fetch(`${onlineManifestUrl}?cb=${Date.now()}`, { cache: "no-store" });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const manifest = await response.json();
-      const target = new URL(manifest.siteUrl || onlineRoot);
+      const target = new URL(manifest.contentVersion === currentContentVersion ? currentSiteUrl : (manifest.siteUrl || currentSiteUrl));
       target.searchParams.set("v", manifest.contentVersion || Date.now());
       target.searchParams.set("refresh", Date.now());
       location.href = target.toString();
